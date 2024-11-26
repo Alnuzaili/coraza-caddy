@@ -1,0 +1,27 @@
+{
+        order coraza_waf first
+}
+sepro.net:80 {
+    coraza_waf {
+        load_owasp_crs
+        directives `
+            Include /ruleset/coraza.conf
+            Include /ruleset/prod.conf
+            SecRuleEngine DetectionOnly
+        `
+    }
+    reverse_proxy juiceshop_prod:3000
+}
+
+# (common_handle_errors) {
+#     handle_errors {
+#         @403 {
+#             expression {http.error.status_code} == 403
+#         }
+#         header @403 X-Blocked "true"
+#         root * /etc/caddy/custom-pages
+#         rewrite @403 /403.html
+#         file_server
+#         templates
+#     }
+# }

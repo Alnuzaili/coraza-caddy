@@ -1,0 +1,64 @@
+services:
+  # SeproWAF
+  sepro-waf:
+    build:
+      context: ./caddy
+      dockerfile: Dockerfile
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - ./ruleset:/ruleset
+      - ./caddy/403.html:/etc/caddy/custom-pages/403.html:ro
+      - audit:/audit
+    restart: unless-stopped
+    ports:
+      - 8080:80
+  
+  # Logging and Analytics Management System
+  # elastic:
+  #   image: docker.elastic.co/elasticsearch/elasticsearch:8.4.0
+  #   volumes:
+  #     - elasticsearch-data:/usr/share/elasticsearch/data
+  #   environment:
+  #     - node.name=elastic
+  #     - discovery.type=single-node
+  #     - cluster.name=ELASTIC
+  #     - MEM_LIMIT=1073741824
+  #     - xpack.security.enabled=false
+  #     - xpack.security.http.ssl.enabled=false
+  #   ports:
+  #     - 9200:9200
+  # kibana:
+  #   image: docker.elastic.co/kibana/kibana:8.4.0
+  #   restart: unless-stopped
+  #   environment:
+  #     - SERVERNAME=kibana
+  #     - ELASTICSEARCH_HOSTS=http://elastic:9200
+  #     - MEM_LIMIT=1073741824
+  #     - xpack.security.enabled=false
+  #   ports:
+  #     - 5601:5601
+  #   depends_on:
+  #     - elastic
+  
+  # logger:
+  #   build:
+  #     context: ./logger
+  #     dockerfile: Dockerfile
+  #   command: http://elastic:9200 /audit/
+  #   restart: unless-stopped
+  #   environment:
+  #     - PYTHONUNBUFFERED=1
+  #   depends_on: 
+  #     - elastic
+  #   volumes:
+  #     - audit:/audit
+  
+  # Web Application
+  juiceshop_prod:
+    image: bkimminich/juice-shop
+    restart: unless-stopped
+
+
+volumes:
+  elasticsearch-data:
+  audit:
