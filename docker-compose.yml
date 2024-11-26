@@ -13,6 +13,12 @@ services:
     ports:
       - 8080:80
   
+  # Web Application
+  juiceshop_prod:
+    image: bkimminich/juice-shop
+    restart: unless-stopped
+
+
   # Logging and Analytics Management System
   # elastic:
   #   image: docker.elastic.co/elasticsearch/elasticsearch:8.4.0
@@ -52,12 +58,6 @@ services:
   #     - elastic
   #   volumes:
   #     - audit:/audit
-  
-  # Web Application
-  juiceshop_prod:
-    image: bkimminich/juice-shop
-    restart: unless-stopped
-
 
 volumes:
   elasticsearch-data:

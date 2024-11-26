@@ -1,16 +1,17 @@
 {
-        order coraza_waf first
+	order coraza_waf first
 }
 sepro.net:80 {
-    coraza_waf {
-        load_owasp_crs
-        directives `
-            Include /ruleset/coraza.conf
-            Include /ruleset/prod.conf
-            SecRuleEngine DetectionOnly
-        `
-    }
-    reverse_proxy juiceshop_prod:3000
+	coraza_waf {
+		load_owasp_crs
+		directives `
+		Include /ruleset/coraza.conf
+		Include /ruleset/prod.conf
+		Include @owasp_crs/*.conf
+		SecRuleEngine On
+		`
+	}
+	reverse_proxy juiceshop_prod:3000
 }
 
 # (common_handle_errors) {
