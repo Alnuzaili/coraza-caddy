@@ -1,4 +1,6 @@
 services:
+
+
   # SeproWAF
   sepro-waf:
     build:
@@ -20,44 +22,44 @@ services:
 
 
   # Logging and Analytics Management System
-  # elastic:
-  #   image: docker.elastic.co/elasticsearch/elasticsearch:8.4.0
-  #   volumes:
-  #     - elasticsearch-data:/usr/share/elasticsearch/data
-  #   environment:
-  #     - node.name=elastic
-  #     - discovery.type=single-node
-  #     - cluster.name=ELASTIC
-  #     - MEM_LIMIT=1073741824
-  #     - xpack.security.enabled=false
-  #     - xpack.security.http.ssl.enabled=false
-  #   ports:
-  #     - 9200:9200
-  # kibana:
-  #   image: docker.elastic.co/kibana/kibana:8.4.0
-  #   restart: unless-stopped
-  #   environment:
-  #     - SERVERNAME=kibana
-  #     - ELASTICSEARCH_HOSTS=http://elastic:9200
-  #     - MEM_LIMIT=1073741824
-  #     - xpack.security.enabled=false
-  #   ports:
-  #     - 5601:5601
-  #   depends_on:
-  #     - elastic
+  elastic:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.4.0
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    environment:
+      - node.name=elastic
+      - discovery.type=single-node
+      - cluster.name=ELASTIC
+      - MEM_LIMIT=1073741824
+      - xpack.security.enabled=false
+      - xpack.security.http.ssl.enabled=false
+    ports:
+      - 9200:9200
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.4.0
+    restart: unless-stopped
+    environment:
+      - SERVERNAME=kibana
+      - ELASTICSEARCH_HOSTS=http://elastic:9200
+      - MEM_LIMIT=1073741824
+      - xpack.security.enabled=false
+    ports:
+      - 5601:5601
+    depends_on:
+      - elastic
   
-  # logger:
-  #   build:
-  #     context: ./logger
-  #     dockerfile: Dockerfile
-  #   command: http://elastic:9200 /audit/
-  #   restart: unless-stopped
-  #   environment:
-  #     - PYTHONUNBUFFERED=1
-  #   depends_on: 
-  #     - elastic
-  #   volumes:
-  #     - audit:/audit
+  logger:
+    build:
+      context: ./logger
+      dockerfile: Dockerfile
+    command: http://elastic:9200 /audit/
+    restart: unless-stopped
+    environment:
+      - PYTHONUNBUFFERED=1
+    depends_on: 
+      - elastic
+    volumes:
+      - audit:/audit
 
 volumes:
   elasticsearch-data:
